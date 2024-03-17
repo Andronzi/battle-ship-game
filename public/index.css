@@ -1,0 +1,16 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.ship-map {
+    width: fit-content;
+}
+
+.map-cell {
+    box-sizing: border-box;
+}
+
+.boat-part {
+    box-sizing: border-box;
+}

@@ -1,18 +1,38 @@
-const enum Cell {
-    EMPTY = 0,
-    SHIP = 1,
-    MISS = 2,
-    HIT = 3,
-    SUNK = 4,
-}
+// type ShipMap = Cell[][];
 
-type ShipMap = Cell[][];
-
-class Player {
-    name: string;
-    map: ShipMap;
-}
+import {delay, distinct, fromEvent} from "rxjs";
+import {map} from "rxjs/operators";
 
 class Game {
-    maps: [ShipMap, ShipMap];
+    // players: [Player, Player];
+}
+
+const DEFAULT_DELAY = 500;
+
+export class Player {
+    static generatePlayer(root: HTMLElement) {
+        const playerInput = document.createElement('input');
+        playerInput.style.marginTop = '10px';
+
+        const playerName = document.createElement('div');
+
+        root.appendChild(playerInput);
+        root.appendChild(playerName);
+
+        fromEvent(playerInput, 'input').pipe(
+            delay(DEFAULT_DELAY),
+            distinct(),
+            map((event: Event) => {
+                const input = event.target;
+
+                if (input instanceof HTMLInputElement) {
+                    return input.value;
+                }
+
+                throw new Error('playerInput must be instance of HTMLInputElement')
+            })
+        ).subscribe(name => {
+            playerName.textContent = name;
+        })
+    }
 }
