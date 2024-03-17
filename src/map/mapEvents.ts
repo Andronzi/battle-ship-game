@@ -38,14 +38,13 @@ export class BoatEvents implements IBoatEvents {
             document.querySelector('.ship-map')!,
             'mouseleave'
         ).pipe(tap(() => {
+            console.log('mouseleave');
             this.mouseOnMap$.next(false)
         })).subscribe();
 
         this.boatWeightSubj$.pipe(
             combineLatestWith(this.mouseOnMap$, mouseMoveOnMap$, this.boatDirectionSubj$),
-            filter(([boatWeight, mouseOnMap]: any) => {
-                return Boolean(boatWeight) && Boolean(mouseOnMap);
-            }),
+            filter(([boatWeight]: any) => Boolean(boatWeight)),
             switchMap(([boatWeight, mouseOnMap, e, boatDirection]: any) => {
                 const coords = {x: e.clientX, y: e.clientY};
 
@@ -54,10 +53,12 @@ export class BoatEvents implements IBoatEvents {
                 }
 
                 return this.shipMap.highlightCells(
-                    {x: e.clientX, y: e.clientY},
+                    coords,
                     boatWeight,
                     boatDirection,
-                ).pipe(takeWhile(() => Boolean(mouseOnMap)));
+                ).pipe(
+                    takeWhile(() => Boolean(mouseOnMap)),
+                );
             }),
         ).subscribe();
     }
